@@ -35,18 +35,14 @@ error_code_t readTempLM75BD(uint8_t devAddr, float *temp) {
   uint8_t writeBuf = 0x00; // Buffer to select temperature register for reading
   uint8_t readBuf[2] = {0}; // Buffer to store raw temperature data from sensor
 
-  error_code_t err = i2cSendTo(devAddr, &writeBuf, 1);
-  if (err != ERR_CODE_SUCCESS) {
-    return err;
-  }
+  error_code_t errCode;
 
-  err = i2cReceiveFrom(devAddr, readBuf, 2);
-  if (err != ERR_CODE_SUCCESS) {
-    return err;
-  }
+  RETURN_IF_ERROR_CODE(i2cSendTo(devAddr, &writeBuf, 1));
+
+  RETURN_IF_ERROR_CODE(i2cReceiveFrom(devAddr, readBuf, 2));
 
   int16_t rawTemp = (readBuf[0] << 8) | readBuf[1]; // Combine two bytes into 16-bit integer
-  *temp = (float) (rawTemp >> 5) * 0.125; // Convert raw temperature to Celsius
+  *temp = (float) (rawTemp >> 5) * 0.125; // Combine into 16-bit integer thenraw temperature to Celsius
   
   return ERR_CODE_SUCCESS;
 }
