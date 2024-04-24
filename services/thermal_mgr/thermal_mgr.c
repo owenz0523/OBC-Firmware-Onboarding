@@ -82,7 +82,7 @@ static void thermalMgr(void *pvParameters) {
         addTemperatureTelemetry(temperature);
         printConsole("%d\n", temperature);
       } else {
-        printConsole("%d", err);
+        LOG_ERROR_CODE(err);
       }
     } else if (event.type == THERMAL_MGR_EVENT_INTERRUPT_TRIGGERED) {
       err = readTempLM75BD(LM75BD_OBC_I2C_ADDR, &temperature);
@@ -94,8 +94,10 @@ static void thermalMgr(void *pvParameters) {
           }
           printConsole("%d\n", temperature);
       } else {
-        printConsole("%d", err);
+        LOG_ERROR_CODE(err);
       }
+    } else {
+      LOG_ERROR("Invalid event");
     }
   }
 }
